@@ -1,0 +1,929 @@
+<!DOCTYPE html>
+<html lang="en" data-theme="light">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<title>CampusFlow | Enterprise Student System</title>
+
+<!-- Inter Font -->
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+<!-- Lucide Icons -->
+<script src="https://unpkg.com/lucide@latest"></script>
+
+<style>
+/* =========================================================
+   1. ENTERPRISE DESIGN SYSTEM (CSS VARIABLES)
+========================================================= */
+:root {
+    /* Light Mode - Slate & Indigo */
+    --bg-app: #f8fafc;
+    --bg-surface: #ffffff;
+    --bg-surface-hover: #f1f5f9;
+    --border-light: #e2e8f0;
+    --border-strong: #cbd5e1;
+    
+    --text-primary: #0f172a;
+    --text-secondary: #475569;
+    --text-tertiary: #94a3b8;
+    
+    --brand-primary: #4f46e5;
+    --brand-primary-hover: #4338ca;
+    --brand-surface: #e0e7ff;
+    --brand-text: #3730a3;
+
+    --success-bg: #dcfce7;
+    --success-text: #166534;
+    --warning-bg: #fef3c7;
+    --warning-text: #92400e;
+    --danger-bg: #fee2e2;
+    --danger-text: #991b1b;
+
+    --shadow-sm: 0 1px 2px 0 rgb(0 0 0 / 0.05);
+    --shadow-md: 0 4px 6px -1px rgb(0 0 0 / 0.1), 0 2px 4px -2px rgb(0 0 0 / 0.1);
+    --shadow-lg: 0 10px 15px -3px rgb(0 0 0 / 0.1), 0 4px 6px -4px rgb(0 0 0 / 0.1);
+    
+    --radius-md: 8px;
+    --radius-lg: 12px;
+    --radius-xl: 16px;
+    
+    --transition: all 0.2s cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+[data-theme="dark"] {
+    /* Dark Mode - True Black & Charcoal */
+    --bg-app: #0a0a0a;
+    --bg-surface: #171717;
+    --bg-surface-hover: #262626;
+    --border-light: #262626;
+    --border-strong: #404040;
+    
+    --text-primary: #f8fafc;
+    --text-secondary: #a1a1aa;
+    --text-tertiary: #52525b;
+    
+    --brand-primary: #6366f1;
+    --brand-primary-hover: #818cf8;
+    --brand-surface: rgba(79, 70, 229, 0.15);
+    --brand-text: #c7d2fe;
+
+    --success-bg: rgba(34, 197, 94, 0.15);
+    --success-text: #4ade80;
+    --warning-bg: rgba(245, 158, 11, 0.15);
+    --warning-text: #fbbf24;
+    --danger-bg: rgba(239, 68, 68, 0.15);
+    --danger-text: #f87171;
+
+    --shadow-sm: 0 1px 2px 0 rgb(0 0 0 / 0.5);
+    --shadow-md: 0 4px 6px -1px rgb(0 0 0 / 0.5);
+    --shadow-lg: 0 10px 15px -3px rgb(0 0 0 / 0.5);
+}
+
+/* =========================================================
+   2. BASE & RESET
+========================================================= */
+* { box-sizing: border-box; margin: 0; padding: 0; }
+body { 
+    font-family: "Inter", sans-serif; 
+    background-color: var(--bg-app); 
+    color: var(--text-primary); 
+    line-height: 1.5;
+    -webkit-font-smoothing: antialiased;
+}
+button, input, select { font-family: inherit; border: none; outline: none; background: transparent; }
+button { cursor: pointer; }
+a { text-decoration: none; color: inherit; }
+
+/* =========================================================
+   3. LAYOUT STRUCTURE
+========================================================= */
+.app-container { display: flex; height: 100vh; overflow: hidden; }
+
+/* SIDEBAR */
+.sidebar {
+    width: 260px;
+    background-color: var(--bg-surface);
+    border-right: 1px solid var(--border-light);
+    display: flex;
+    flex-direction: column;
+    z-index: 40;
+    transition: transform 0.3s ease;
+}
+
+.sidebar-header {
+    height: 72px;
+    display: flex;
+    align-items: center;
+    padding: 0 24px;
+    gap: 12px;
+    border-bottom: 1px solid var(--border-light);
+}
+
+.logo-box {
+    width: 32px; height: 32px;
+    background: var(--brand-primary);
+    border-radius: 8px;
+    display: grid; place-items: center;
+    color: white;
+}
+.logo-box i { width: 18px; height: 18px; }
+.logo-text { font-size: 16px; font-weight: 700; letter-spacing: -0.02em; }
+
+.sidebar-nav {
+    flex: 1;
+    padding: 24px 16px;
+    display: flex;
+    flex-direction: column;
+    gap: 4px;
+    overflow-y: auto;
+}
+
+.nav-label {
+    font-size: 11px; font-weight: 600; color: var(--text-tertiary);
+    text-transform: uppercase; letter-spacing: 0.05em;
+    margin: 16px 0 8px 12px;
+}
+
+.nav-item {
+    display: flex; align-items: center; gap: 12px;
+    padding: 10px 12px; border-radius: var(--radius-md);
+    color: var(--text-secondary); font-size: 14px; font-weight: 500;
+    transition: var(--transition);
+}
+.nav-item i { width: 18px; height: 18px; }
+.nav-item:hover { background-color: var(--bg-surface-hover); color: var(--text-primary); }
+.nav-item.active { background-color: var(--brand-surface); color: var(--brand-text); }
+
+/* MAIN CONTENT */
+.main-wrapper { flex: 1; display: flex; flex-direction: column; overflow: hidden; }
+
+/* HEADER */
+.topbar {
+    height: 72px;
+    background-color: var(--bg-surface);
+    border-bottom: 1px solid var(--border-light);
+    display: flex; align-items: center; justify-content: space-between;
+    padding: 0 32px;
+    z-index: 30;
+}
+
+.breadcrumb { display: flex; align-items: center; gap: 8px; font-size: 14px; font-weight: 500; color: var(--text-secondary); }
+.breadcrumb span.current { color: var(--text-primary); font-weight: 600; }
+
+.topbar-actions { display: flex; align-items: center; gap: 16px; }
+
+.icon-btn {
+    width: 36px; height: 36px; border-radius: var(--radius-md);
+    display: grid; place-items: center; color: var(--text-secondary);
+    border: 1px solid transparent; transition: var(--transition);
+}
+.icon-btn:hover { background-color: var(--bg-surface-hover); color: var(--text-primary); border-color: var(--border-light); }
+
+.user-profile-btn {
+    display: flex; align-items: center; gap: 10px;
+    padding: 6px 12px 6px 6px; border-radius: 20px;
+    border: 1px solid var(--border-light); transition: var(--transition); cursor: pointer;
+}
+.user-profile-btn:hover { background-color: var(--bg-surface-hover); }
+.avatar { width: 28px; height: 28px; border-radius: 50%; background-color: var(--brand-primary); color: white; display: grid; place-items: center; font-size: 12px; font-weight: 600; }
+.user-name { font-size: 13px; font-weight: 500; }
+
+/* CONTENT AREA */
+.content-area { flex: 1; overflow-y: auto; padding: 40px; }
+.view-section { display: none; animation: fadeUp 0.3s ease forwards; opacity: 0; transform: translateY(10px); }
+.view-section.active { display: block; }
+
+@keyframes fadeUp { to { opacity: 1; transform: translateY(0); } }
+
+.page-header { display: flex; justify-content: space-between; align-items: flex-end; margin-bottom: 32px; }
+.page-title { font-size: 24px; font-weight: 700; letter-spacing: -0.02em; color: var(--text-primary); }
+.page-subtitle { font-size: 14px; color: var(--text-secondary); margin-top: 4px; }
+
+/* =========================================================
+   4. UI COMPONENTS
+========================================================= */
+/* BUTTONS */
+.btn {
+    display: inline-flex; align-items: center; gap: 8px;
+    padding: 10px 18px; border-radius: var(--radius-md);
+    font-size: 14px; font-weight: 500; transition: var(--transition);
+}
+.btn i { width: 16px; height: 16px; }
+.btn-primary { background-color: var(--brand-primary); color: white; box-shadow: var(--shadow-sm); }
+.btn-primary:hover { background-color: var(--brand-primary-hover); transform: translateY(-1px); }
+.btn-secondary { background-color: var(--bg-surface); color: var(--text-primary); border: 1px solid var(--border-light); box-shadow: var(--shadow-sm); }
+.btn-secondary:hover { background-color: var(--bg-surface-hover); }
+
+/* STAT CARDS */
+.stat-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(250px, 1fr)); gap: 24px; margin-bottom: 32px; }
+.stat-card {
+    background-color: var(--bg-surface); border: 1px solid var(--border-light);
+    border-radius: var(--radius-lg); padding: 24px; box-shadow: var(--shadow-sm);
+    display: flex; flex-direction: column; gap: 12px;
+}
+.stat-header { display: flex; justify-content: space-between; align-items: center; color: var(--text-secondary); font-size: 14px; font-weight: 500; }
+.stat-header i { color: var(--text-tertiary); width: 18px; }
+.stat-value { font-size: 32px; font-weight: 700; color: var(--text-primary); letter-spacing: -0.03em; }
+
+/* CARDS & TABLES */
+.card {
+    background-color: var(--bg-surface); border: 1px solid var(--border-light);
+    border-radius: var(--radius-lg); box-shadow: var(--shadow-sm); overflow: hidden;
+}
+.card-toolbar {
+    padding: 16px 24px; border-bottom: 1px solid var(--border-light);
+    display: flex; justify-content: space-between; gap: 16px; flex-wrap: wrap;
+}
+
+.search-box {
+    position: relative; flex: 1; min-width: 260px; max-width: 400px;
+}
+.search-box i { position: absolute; left: 14px; top: 50%; transform: translateY(-50%); color: var(--text-tertiary); width: 16px; }
+.search-box input {
+    width: 100%; padding: 10px 16px 10px 40px; border-radius: var(--radius-md);
+    border: 1px solid var(--border-light); background: var(--bg-app);
+    color: var(--text-primary); font-size: 14px; transition: var(--transition);
+}
+.search-box input:focus { border-color: var(--brand-primary); box-shadow: 0 0 0 3px var(--brand-surface); }
+
+.filter-select {
+    padding: 10px 16px; border-radius: var(--radius-md);
+    border: 1px solid var(--border-light); background: var(--bg-app);
+    color: var(--text-primary); font-size: 14px; cursor: pointer;
+}
+
+table { width: 100%; border-collapse: collapse; text-align: left; }
+th {
+    padding: 14px 24px; background-color: var(--bg-surface-hover);
+    color: var(--text-secondary); font-size: 12px; font-weight: 600;
+    text-transform: uppercase; letter-spacing: 0.05em; border-bottom: 1px solid var(--border-strong);
+}
+td {
+    padding: 16px 24px; border-bottom: 1px solid var(--border-light);
+    font-size: 14px; color: var(--text-primary); vertical-align: middle;
+}
+tr:last-child td { border-bottom: none; }
+tr:hover td { background-color: var(--bg-app); }
+
+.table-avatar-group { display: flex; align-items: center; gap: 12px; }
+.table-avatar-group .t-avatar { width: 36px; height: 36px; border-radius: 8px; background: var(--bg-surface-hover); border: 1px solid var(--border-light); display: grid; place-items: center; font-size: 12px; font-weight: 600; color: var(--text-secondary); }
+.t-name { font-weight: 600; color: var(--text-primary); }
+.t-sub { font-size: 12px; color: var(--text-tertiary); margin-top: 2px; }
+
+/* BADGES */
+.badge {
+    padding: 4px 10px; border-radius: 6px; font-size: 12px; font-weight: 600;
+    display: inline-flex; align-items: center;
+}
+.badge-success { background-color: var(--success-bg); color: var(--success-text); }
+.badge-warning { background-color: var(--warning-bg); color: var(--warning-text); }
+.badge-danger { background-color: var(--danger-bg); color: var(--danger-text); }
+
+.row-actions { display: flex; gap: 6px; }
+.btn-icon-small {
+    width: 28px; height: 28px; border-radius: 6px; display: grid; place-items: center;
+    color: var(--text-secondary); transition: var(--transition);
+}
+.btn-icon-small:hover { background-color: var(--bg-surface-hover); color: var(--text-primary); }
+.btn-icon-small.delete:hover { background-color: var(--danger-bg); color: var(--danger-text); }
+
+/* MODALS */
+.modal-backdrop {
+    position: fixed; inset: 0; background-color: rgba(0,0,0,0.4); backdrop-filter: blur(4px);
+    z-index: 100; display: flex; align-items: center; justify-content: center;
+    opacity: 0; pointer-events: none; transition: var(--transition);
+}
+.modal-backdrop.active { opacity: 1; pointer-events: all; }
+.modal-window {
+    background-color: var(--bg-surface); border: 1px solid var(--border-light);
+    border-radius: var(--radius-xl); width: 100%; max-width: 500px;
+    box-shadow: var(--shadow-lg); transform: scale(0.95) translateY(10px);
+    transition: all 0.3s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+}
+.modal-backdrop.active .modal-window { transform: scale(1) translateY(0); }
+
+.modal-header { padding: 24px; border-bottom: 1px solid var(--border-light); display: flex; justify-content: space-between; align-items: center; }
+.modal-header h3 { font-size: 18px; font-weight: 600; }
+.modal-body { padding: 24px; }
+.modal-footer { padding: 16px 24px; border-top: 1px solid var(--border-light); background-color: var(--bg-app); display: flex; justify-content: flex-end; gap: 12px; border-radius: 0 0 var(--radius-xl) var(--radius-xl); }
+
+.form-group { margin-bottom: 16px; }
+.form-group label { display: block; font-size: 13px; font-weight: 500; color: var(--text-secondary); margin-bottom: 6px; }
+.form-group input, .form-group select {
+    width: 100%; padding: 10px 14px; border-radius: var(--radius-md);
+    border: 1px solid var(--border-strong); background-color: var(--bg-surface);
+    color: var(--text-primary); font-size: 14px; transition: var(--transition);
+}
+.form-group input:focus, .form-group select:focus {
+    border-color: var(--brand-primary); box-shadow: 0 0 0 3px var(--brand-surface);
+}
+
+/* TOAST NOTIFICATIONS */
+.toast-container { position: fixed; bottom: 24px; right: 24px; z-index: 200; display: flex; flex-direction: column; gap: 12px; }
+.toast {
+    background-color: var(--bg-surface); border: 1px solid var(--border-light);
+    box-shadow: var(--shadow-lg); padding: 14px 20px; border-radius: var(--radius-md);
+    display: flex; align-items: center; gap: 12px; font-size: 14px; font-weight: 500;
+    color: var(--text-primary); transform: translateX(120%); transition: transform 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+}
+.toast.show { transform: translateX(0); }
+.toast i { color: var(--success-text); }
+
+/* MOBILE RESPONSIVE */
+.mobile-menu-btn { display: none; }
+@media (max-width: 1024px) {
+    .sidebar { position: fixed; transform: translateX(-100%); height: 100vh; box-shadow: var(--shadow-lg); }
+    .sidebar.open { transform: translateX(0); }
+    .mobile-menu-btn { display: grid; }
+    .content-area { padding: 24px; }
+    .stat-grid { grid-template-columns: 1fr; }
+    .card-toolbar { flex-direction: column; }
+    .search-box { max-width: 100%; }
+}
+</style>
+</head>
+<body>
+
+<div class="app-container">
+    <!-- SIDEBAR -->
+    <aside class="sidebar" id="sidebar">
+        <div class="sidebar-header">
+            <div class="logo-box"><i data-lucide="layers"></i></div>
+            <div class="logo-text">CampusFlow</div>
+        </div>
+        <nav class="sidebar-nav">
+            <div class="nav-label">Overview</div>
+            <a href="#" class="nav-item active" data-view="dashboard"><i data-lucide="layout-grid"></i> Dashboard</a>
+            
+            <div class="nav-label">Administration</div>
+            <a href="#" class="nav-item" data-view="students"><i data-lucide="users"></i> Student Directory</a>
+            <a href="#" class="nav-item" data-view="attendance"><i data-lucide="calendar-check-2"></i> Attendance</a>
+            <a href="#" class="nav-item" data-view="fees"><i data-lucide="credit-card"></i> Fee Management</a>
+            
+            <div class="nav-label">System</div>
+            <a href="#" class="nav-item" data-view="reports"><i data-lucide="file-down"></i> Export Data</a>
+        </nav>
+    </aside>
+
+    <!-- MAIN WRAPPER -->
+    <div class="main-wrapper">
+        <!-- HEADER -->
+        <header class="topbar">
+            <div style="display: flex; align-items: center; gap: 16px;">
+                <button class="icon-btn mobile-menu-btn" id="menuToggle"><i data-lucide="menu"></i></button>
+                <div class="breadcrumb">
+                    <span>CampusFlow</span>
+                    <i data-lucide="chevron-right" style="width: 14px; color: var(--text-tertiary);"></i>
+                    <span class="current" id="breadcrumb-current">Dashboard</span>
+                </div>
+            </div>
+            
+            <div class="topbar-actions">
+                <button class="icon-btn" onclick="toggleTheme()" title="Toggle Theme"><i data-lucide="moon" id="theme-icon"></i></button>
+                <button class="icon-btn" onclick="showToast('System synced successfully')"><i data-lucide="bell"></i></button>
+                <div class="user-profile-btn">
+                    <div class="avatar">KK</div>
+                    <span class="user-name">Kishore Kumar</span>
+                </div>
+            </div>
+        </header>
+
+        <!-- CONTENT AREA -->
+        <main class="content-area">
+            
+            <!-- VIEW: DASHBOARD -->
+            <section class="view-section active" id="view-dashboard">
+                <div class="page-header">
+                    <div>
+                        <h1 class="page-title">Dashboard Overview</h1>
+                        <p class="page-subtitle">Real-time metrics for Dr. NGP Arts and Science College.</p>
+                    </div>
+                    <button class="btn btn-primary" onclick="openModal()"><i data-lucide="plus"></i> New Enrollment</button>
+                </div>
+
+                <div class="stat-grid">
+                    <div class="stat-card">
+                        <div class="stat-header"><span>Total Students</span> <i data-lucide="users"></i></div>
+                        <div class="stat-value" id="stat-total">0</div>
+                    </div>
+                    <div class="stat-card">
+                        <div class="stat-header"><span>Present Today</span> <i data-lucide="user-check"></i></div>
+                        <div class="stat-value" id="stat-attendance">0%</div>
+                    </div>
+                    <div class="stat-card">
+                        <div class="stat-header"><span>Pending Fees Due</span> <i data-lucide="indian-rupee"></i></div>
+                        <div class="stat-value" id="stat-fees">₹0</div>
+                    </div>
+                </div>
+
+                <div class="card">
+                    <div class="card-toolbar" style="border-bottom:none; padding-bottom: 0;">
+                        <h3 style="font-size: 16px; font-weight: 600;">Recent Enrollments</h3>
+                    </div>
+                    <div style="overflow-x: auto; padding-top: 16px;">
+                        <table>
+                            <thead>
+                                <tr>
+                                    <th>Student</th>
+                                    <th>Roll Number</th>
+                                    <th>Department</th>
+                                    <th>Status</th>
+                                </tr>
+                            </thead>
+                            <tbody id="recent-table">
+                                <!-- Populated by JS -->
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+            </section>
+
+            <!-- VIEW: STUDENTS -->
+            <section class="view-section" id="view-students">
+                <div class="page-header">
+                    <div>
+                        <h1 class="page-title">Student Directory</h1>
+                        <p class="page-subtitle">Manage records, update details, or remove entries.</p>
+                    </div>
+                    <button class="btn btn-primary" onclick="openModal()"><i data-lucide="plus"></i> Add Student</button>
+                </div>
+
+                <div class="card">
+                    <div class="card-toolbar">
+                        <div class="search-box">
+                            <i data-lucide="search"></i>
+                            <input type="text" id="search-student" placeholder="Search by name, roll no, or email..." oninput="renderStudents()">
+                        </div>
+                        <select class="filter-select" id="filter-dept" onchange="renderStudents()">
+                            <option value="All">All Departments</option>
+                            <option value="Computer Science">Computer Science</option>
+                            <option value="Information Tech">Information Tech</option>
+                            <option value="AI & Data Science">AI & Data Science</option>
+                        </select>
+                    </div>
+                    <div style="overflow-x: auto;">
+                        <table>
+                            <thead>
+                                <tr>
+                                    <th>Student Details</th>
+                                    <th>Roll No</th>
+                                    <th>Department</th>
+                                    <th>Year</th>
+                                    <th style="text-align: right;">Actions</th>
+                                </tr>
+                            </thead>
+                            <tbody id="student-table">
+                                <!-- Populated by JS -->
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+            </section>
+
+            <!-- VIEW: ATTENDANCE -->
+            <section class="view-section" id="view-attendance">
+                <div class="page-header">
+                    <div>
+                        <h1 class="page-title">Daily Attendance</h1>
+                        <p class="page-subtitle">Record daily presence. Dashboard syncs automatically.</p>
+                    </div>
+                    <button class="btn btn-secondary" onclick="markAllPresent()"><i data-lucide="check-circle-2"></i> Mark All Present</button>
+                </div>
+
+                <div class="card">
+                    <div style="overflow-x: auto;">
+                        <table>
+                            <thead>
+                                <tr>
+                                    <th>Student</th>
+                                    <th>Roll No</th>
+                                    <th>Status</th>
+                                    <th style="text-align: right;">Actions</th>
+                                </tr>
+                            </thead>
+                            <tbody id="attendance-table">
+                                <!-- Populated by JS -->
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+            </section>
+
+            <!-- VIEW: FEES -->
+            <section class="view-section" id="view-fees">
+                <div class="page-header">
+                    <div>
+                        <h1 class="page-title">Fee Management</h1>
+                        <p class="page-subtitle">Track and process semester tuition payments.</p>
+                    </div>
+                </div>
+
+                <div class="card">
+                    <div style="overflow-x: auto;">
+                        <table>
+                            <thead>
+                                <tr>
+                                    <th>Student</th>
+                                    <th>Roll No</th>
+                                    <th>Amount Due</th>
+                                    <th>Status</th>
+                                    <th style="text-align: right;">Action</th>
+                                </tr>
+                            </thead>
+                            <tbody id="fee-table">
+                                <!-- Populated by JS -->
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+            </section>
+
+            <!-- VIEW: REPORTS -->
+            <section class="view-section" id="view-reports">
+                <div class="page-header">
+                    <div>
+                        <h1 class="page-title">System Reports</h1>
+                        <p class="page-subtitle">Export institutional data securely.</p>
+                    </div>
+                </div>
+
+                <div class="card" style="padding: 48px 24px; text-align: center; max-width: 600px; margin: 0 auto;">
+                    <div style="width: 64px; height: 64px; background: var(--brand-surface); color: var(--brand-text); border-radius: 16px; display: grid; place-items: center; margin: 0 auto 24px;">
+                        <i data-lucide="file-spreadsheet" style="width: 32px; height: 32px;"></i>
+                    </div>
+                    <h3 style="font-size: 18px; margin-bottom: 8px;">Master Student Record</h3>
+                    <p style="color: var(--text-secondary); margin-bottom: 32px; font-size: 14px;">Generates a comprehensive CSV file containing all active enrollments, departmental data, and financial statuses.</p>
+                    <button class="btn btn-primary" onclick="exportCSV()"><i data-lucide="download"></i> Download CSV Report</button>
+                </div>
+            </section>
+
+        </main>
+    </div>
+</div>
+
+<!-- MODAL COMPONENT -->
+<div class="modal-backdrop" id="app-modal">
+    <div class="modal-window">
+        <div class="modal-header">
+            <h3 id="modal-title">Add Student</h3>
+            <button class="btn-icon-small" onclick="closeModal()"><i data-lucide="x"></i></button>
+        </div>
+        <form id="student-form" onsubmit="handleFormSubmit(event)">
+            <div class="modal-body">
+                <input type="hidden" id="form-id">
+                <div class="form-group">
+                    <label>Full Name</label>
+                    <input type="text" id="form-name" required placeholder="e.g. Arjun Kumar">
+                </div>
+                <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 16px;">
+                    <div class="form-group">
+                        <label>Roll Number</label>
+                        <input type="text" id="form-roll" required placeholder="e.g. 24CS101">
+                    </div>
+                    <div class="form-group">
+                        <label>Academic Year</label>
+                        <select id="form-year" required>
+                            <option value="1st Year">1st Year</option>
+                            <option value="2nd Year">2nd Year</option>
+                            <option value="3rd Year">3rd Year</option>
+                            <option value="4th Year">4th Year</option>
+                        </select>
+                    </div>
+                </div>
+                <div class="form-group">
+                    <label>Email Address</label>
+                    <input type="email" id="form-email" required placeholder="arjun@campus.edu.in">
+                </div>
+                <div class="form-group" style="margin-bottom: 0;">
+                    <label>Department</label>
+                    <select id="form-dept" required>
+                        <option value="Computer Science">B.Sc Computer Science</option>
+                        <option value="Information Tech">B.Sc Information Tech</option>
+                        <option value="AI & Data Science">B.Sc AI & Data Science</option>
+                    </select>
+                </div>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-secondary" onclick="closeModal()">Cancel</button>
+                <button type="submit" class="btn btn-primary"><i data-lucide="save"></i> Save Record</button>
+            </div>
+        </form>
+    </div>
+</div>
+
+<!-- TOAST CONTAINER -->
+<div class="toast-container" id="toast-container"></div>
+
+<script>
+/* =========================================
+   APPLICATION STATE & DATA
+========================================= */
+let state = {
+    theme: 'light',
+    students: [
+        { id: '1', name: 'Saravanan T', roll: '23CS012', email: 'saravanan@drngp.ac.in', dept: 'Computer Science', year: '3rd Year', fee: 'Paid', attendance: 'Present' },
+        { id: '2', name: 'Kavitha R', roll: '24IT044', email: 'kavitha@drngp.ac.in', dept: 'Information Tech', year: '2nd Year', fee: 'Pending', attendance: 'Present' },
+        { id: '3', name: 'Surya Prakash', roll: '22AI108', email: 'surya@drngp.ac.in', dept: 'AI & Data Science', year: '4th Year', fee: 'Paid', attendance: 'Absent' },
+        { id: '4', name: 'Divya Dharshini', roll: '23CS056', email: 'divya@drngp.ac.in', dept: 'Computer Science', year: '3rd Year', fee: 'Pending', attendance: 'Present' }
+    ]
+};
+
+const FEE_AMOUNT = 45000;
+
+/* =========================================
+   INITIALIZATION
+========================================= */
+document.addEventListener('DOMContentLoaded', () => {
+    lucide.createIcons();
+    initNavigation();
+    updateAllViews();
+});
+
+/* =========================================
+   NAVIGATION & UI LOGIC
+========================================= */
+function initNavigation() {
+    const navItems = document.querySelectorAll('.nav-item');
+    const sections = document.querySelectorAll('.view-section');
+    
+    // Mobile Menu
+    document.getElementById('menuToggle').addEventListener('click', () => {
+        document.getElementById('sidebar').classList.toggle('open');
+    });
+
+    navItems.forEach(item => {
+        item.addEventListener('click', (e) => {
+            e.preventDefault();
+            // Active states
+            navItems.forEach(n => n.classList.remove('active'));
+            item.classList.add('active');
+            
+            // Switch Section
+            const viewName = item.getAttribute('data-view');
+            sections.forEach(s => s.classList.remove('active'));
+            document.getElementById('view-' + viewName).classList.add('active');
+            
+            // Update Breadcrumb
+            document.getElementById('breadcrumb-current').innerText = item.innerText;
+            
+            // Close mobile menu
+            document.getElementById('sidebar').classList.remove('open');
+        });
+    });
+}
+
+function getInitials(name) {
+    return name.split(' ').map(n => n[0]).join('').substring(0, 2).toUpperCase();
+}
+
+/* =========================================
+   RENDER PIPELINE
+========================================= */
+function updateAllViews() {
+    renderDashboard();
+    renderStudents();
+    renderAttendance();
+    renderFees();
+    lucide.createIcons();
+}
+
+function renderDashboard() {
+    const total = state.students.length;
+    const pending = state.students.filter(s => s.fee === 'Pending').length;
+    const present = state.students.filter(s => s.attendance === 'Present').length;
+    
+    document.getElementById('stat-total').innerText = total;
+    document.getElementById('stat-fees').innerText = '₹' + (pending * FEE_AMOUNT).toLocaleString('en-IN');
+    document.getElementById('stat-attendance').innerText = total === 0 ? '0%' : Math.round((present / total) * 100) + '%';
+
+    const recentTbody = document.getElementById('recent-table');
+    recentTbody.innerHTML = '';
+    
+    state.students.slice(-4).reverse().forEach(s => {
+        const badgeClass = s.fee === 'Paid' ? 'badge-success' : 'badge-warning';
+        recentTbody.innerHTML += `
+            <tr>
+                <td>
+                    <div class="table-avatar-group">
+                        <div class="t-avatar">${getInitials(s.name)}</div>
+                        <div><div class="t-name">${s.name}</div><div class="t-sub">${s.email}</div></div>
+                    </div>
+                </td>
+                <td style="font-weight: 500;">${s.roll}</td>
+                <td><span style="color:var(--text-secondary);">${s.dept}</span></td>
+                <td><span class="badge ${badgeClass}">${s.fee}</span></td>
+            </tr>
+        `;
+    });
+}
+
+function renderStudents() {
+    const tbody = document.getElementById('student-table');
+    const search = document.getElementById('search-student').value.toLowerCase();
+    const dept = document.getElementById('filter-dept').value;
+    
+    tbody.innerHTML = '';
+    
+    const filtered = state.students.filter(s => {
+        const matchesSearch = s.name.toLowerCase().includes(search) || s.roll.toLowerCase().includes(search);
+        const matchesDept = dept === 'All' || s.dept.includes(dept);
+        return matchesSearch && matchesDept;
+    });
+
+    if(filtered.length === 0) {
+        tbody.innerHTML = `<tr><td colspan="5" style="text-align:center; padding: 32px; color:var(--text-tertiary);">No student records found.</td></tr>`;
+        return;
+    }
+
+    filtered.forEach(s => {
+        tbody.innerHTML += `
+            <tr>
+                <td>
+                    <div class="table-avatar-group">
+                        <div class="t-avatar">${getInitials(s.name)}</div>
+                        <div><div class="t-name">${s.name}</div><div class="t-sub">${s.email}</div></div>
+                    </div>
+                </td>
+                <td style="font-weight: 500;">${s.roll}</td>
+                <td style="color:var(--text-secondary);">${s.dept}</td>
+                <td style="color:var(--text-secondary);">${s.year}</td>
+                <td style="text-align:right;">
+                    <div class="row-actions" style="justify-content: flex-end;">
+                        <button class="btn-icon-small" onclick="editStudent('${s.id}')"><i data-lucide="edit-2" style="width:14px;"></i></button>
+                        <button class="btn-icon-small delete" onclick="deleteStudent('${s.id}')"><i data-lucide="trash-2" style="width:14px;"></i></button>
+                    </div>
+                </td>
+            </tr>
+        `;
+    });
+}
+
+function renderAttendance() {
+    const tbody = document.getElementById('attendance-table');
+    tbody.innerHTML = '';
+    
+    state.students.forEach(s => {
+        const badgeClass = s.attendance === 'Present' ? 'badge-success' : 'badge-danger';
+        tbody.innerHTML += `
+            <tr>
+                <td>
+                    <div class="table-avatar-group">
+                        <div class="t-avatar">${getInitials(s.name)}</div>
+                        <div class="t-name">${s.name}</div>
+                    </div>
+                </td>
+                <td style="font-weight: 500;">${s.roll}</td>
+                <td><span class="badge ${badgeClass}">${s.attendance}</span></td>
+                <td style="text-align:right;">
+                    <div class="row-actions" style="justify-content: flex-end;">
+                        <button class="btn btn-secondary" style="padding: 6px 12px; font-size: 12px;" onclick="updateAttendance('${s.id}', 'Present')">Present</button>
+                        <button class="btn btn-secondary" style="padding: 6px 12px; font-size: 12px;" onclick="updateAttendance('${s.id}', 'Absent')">Absent</button>
+                    </div>
+                </td>
+            </tr>
+        `;
+    });
+}
+
+function renderFees() {
+    const tbody = document.getElementById('fee-table');
+    tbody.innerHTML = '';
+    
+    state.students.forEach(s => {
+        const badgeClass = s.fee === 'Paid' ? 'badge-success' : 'badge-warning';
+        tbody.innerHTML += `
+            <tr>
+                <td>
+                    <div class="table-avatar-group">
+                        <div class="t-avatar">${getInitials(s.name)}</div>
+                        <div class="t-name">${s.name}</div>
+                    </div>
+                </td>
+                <td style="font-weight: 500;">${s.roll}</td>
+                <td style="font-weight: 600;">₹${FEE_AMOUNT.toLocaleString('en-IN')}</td>
+                <td><span class="badge ${badgeClass}">${s.fee}</span></td>
+                <td style="text-align:right;">
+                    ${s.fee === 'Pending' 
+                        ? `<button class="btn btn-primary" style="padding: 6px 12px; font-size: 12px;" onclick="markFeePaid('${s.id}')">Process Payment</button>`
+                        : `<span style="color:var(--success-text); font-weight:600; font-size:12px; display:inline-flex; align-items:center; gap:4px;"><i data-lucide="check-circle-2" style="width:14px;"></i> Cleared</span>`
+                    }
+                </td>
+            </tr>
+        `;
+    });
+}
+
+/* =========================================
+   CRUD OPERATIONS
+========================================= */
+function handleFormSubmit(e) {
+    e.preventDefault();
+    const id = document.getElementById('form-id').value;
+    const data = {
+        name: document.getElementById('form-name').value,
+        roll: document.getElementById('form-roll').value,
+        email: document.getElementById('form-email').value,
+        dept: document.getElementById('form-dept').value,
+        year: document.getElementById('form-year').value,
+    };
+
+    if (id) {
+        const index = state.students.findIndex(s => s.id === id);
+        state.students[index] = { ...state.students[index], ...data };
+        showToast('Record updated successfully');
+    } else {
+        state.students.push({ id: Date.now().toString(), ...data, fee: 'Pending', attendance: 'Present' });
+        showToast('Student enrolled successfully');
+    }
+    
+    closeModal();
+    updateAllViews();
+}
+
+function editStudent(id) {
+    const s = state.students.find(x => x.id === id);
+    if(!s) return;
+    
+    document.getElementById('modal-title').innerText = 'Edit Record';
+    document.getElementById('form-id').value = s.id;
+    document.getElementById('form-name').value = s.name;
+    document.getElementById('form-roll').value = s.roll;
+    document.getElementById('form-email').value = s.email;
+    document.getElementById('form-dept').value = s.dept.includes('Computer') ? 'Computer Science' : s.dept.includes('IT') || s.dept.includes('Information') ? 'Information Tech' : 'AI & Data Science';
+    document.getElementById('form-year').value = s.year;
+    
+    document.getElementById('app-modal').classList.add('active');
+}
+
+function deleteStudent(id) {
+    if(confirm('Are you sure you want to permanently remove this record?')) {
+        state.students = state.students.filter(s => s.id !== id);
+        updateAllViews();
+        showToast('Record deleted');
+    }
+}
+
+function updateAttendance(id, status) {
+    const s = state.students.find(x => x.id === id);
+    if(s) { s.attendance = status; updateAllViews(); }
+}
+
+function markAllPresent() {
+    state.students.forEach(s => s.attendance = 'Present');
+    updateAllViews();
+    showToast('All marked present');
+}
+
+function markFeePaid(id) {
+    const s = state.students.find(x => x.id === id);
+    if(s) { s.fee = 'Paid'; updateAllViews(); showToast('Payment processed successfully'); }
+}
+
+/* =========================================
+   UTILITIES
+========================================= */
+function openModal() {
+    document.getElementById('student-form').reset();
+    document.getElementById('form-id').value = '';
+    document.getElementById('modal-title').innerText = 'Add Student';
+    document.getElementById('app-modal').classList.add('active');
+}
+
+function closeModal() { document.getElementById('app-modal').classList.remove('active'); }
+
+function showToast(msg) {
+    const container = document.getElementById('toast-container');
+    const toast = document.createElement('div');
+    toast.className = 'toast';
+    toast.innerHTML = `<i data-lucide="check-circle-2"></i> ${msg}`;
+    container.appendChild(toast);
+    lucide.createIcons();
+    
+    requestAnimationFrame(() => toast.classList.add('show'));
+    setTimeout(() => {
+        toast.classList.remove('show');
+        setTimeout(() => toast.remove(), 300);
+    }, 3000);
+}
+
+function exportCSV() {
+    if(state.students.length === 0) return showToast('No data available');
+    const headers = ['Roll Number,Student Name,Email,Department,Year,Fee Status,Attendance'];
+    const rows = state.students.map(s => `${s.roll},"${s.name}",${s.email},"${s.dept}",${s.year},${s.fee},${s.attendance}`);
+    const uri = encodeURI("data:text/csv;charset=utf-8," + headers.concat(rows).join("\n"));
+    const link = document.createElement("a");
+    link.href = uri; link.download = `CampusFlow_Export_${new Date().toISOString().split('T')[0]}.csv`;
+    document.body.appendChild(link); link.click(); document.body.removeChild(link);
+    showToast('Download initiated');
+}
+
+function toggleTheme() {
+    state.theme = state.theme === 'light' ? 'dark' : 'light';
+    document.documentElement.setAttribute('data-theme', state.theme);
+    document.getElementById('theme-icon').setAttribute('data-lucide', state.theme === 'light' ? 'moon' : 'sun');
+    lucide.createIcons();
+}
+</script>
+</body>
+</html>
